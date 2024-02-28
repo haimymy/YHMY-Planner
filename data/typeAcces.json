@@ -1,0 +1,12 @@
+{
+  "typeAccess": [
+    {
+      "id": 1,
+      "nom": "lecture et ecriture"
+    },
+    {
+      "id": 2,
+      "nom": "lecture seule"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "salarie_tache": [
+    {
+      "salarie_id": "1",
+      "tache_id": "1"
+    },
+    {
+      "salarie_id": "2",
+      "tache_id": "2"
+    },
+    {
+      "salarie_id": "3",
+      "tache_id": "3"
+    },
+    {
+      "salarie_id": "4",
+      "tache_id": "4"
+    },
+    {
+      "salarie_id": "5",
+      "tache_id": "1"
+    },
+    {
+      "salarie_id": "1",
+      "tache_id": "2"
+    },
+    {
+      "salarie_id": "2",
+      "tache_id": "3"
+    }
+  ]
+}

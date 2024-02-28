@@ -1,0 +1,9 @@
+{
+  "admin": {
+    "id": "123456",
+    "nom": "Doe",
+    "prenom": "John",
+    "login": "admin",
+    "password": "securepassword123"
+  }
+}

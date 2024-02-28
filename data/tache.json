@@ -1,0 +1,36 @@
+{
+  "taches": [
+    {
+      "id": "1",
+      "title": "Task 1",
+      "description": "Description for Task 1",
+      "effort": 5,
+      "statut": 1,
+      "project_id": "1"
+    },
+    {
+      "id": "2",
+      "title": "Task 2",
+      "description": "Description for Task 2",
+      "effort": 8,
+      "statut": 2,
+      "project_id": "1"
+    },
+    {
+      "id": "3",
+      "title": "Task 3",
+      "description": "Description for Task 3",
+      "effort": 13,
+      "statut": 3,
+      "project_id": "2"
+    },
+    {
+      "id": "4",
+      "title": "Task 4",
+      "description": "Description for Task 4",
+      "effort": 21,
+      "statut": 1,
+      "project_id": "3"
+    }
+  ]
+}

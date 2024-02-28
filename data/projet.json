@@ -1,0 +1,22 @@
+{
+  "projects": [
+    {
+      "id": "1",
+      "nom": "Project A",
+      "description": "This is the description for Project A",
+      "chef_de_projet_id": "1"
+    },
+    {
+      "id": "2",
+      "nom": "Project B",
+      "description": "This is the description for Project B",
+      "chef_de_projet_id": "3"
+    },
+    {
+      "id": "3",
+      "nom": "Project C",
+      "description": "This is the description for Project C",
+      "chef_de_projet_id": "5"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "participation": [
+    {
+      "salarie_id": "1",
+      "project_id": "1",
+      "type_access_id": "1"
+    },
+    {
+      "salarie_id": "2",
+      "project_id": "1",
+      "type_access_id": "2"
+    },
+    {
+      "salarie_id": "2",
+      "project_id": "2",
+      "type_access_id": "1"
+    },
+    {
+      "salarie_id": "1",
+      "project_id": "3",
+      "type_access_id": "2"
+    },
+    {
+      "salarie_id": "5",
+      "project_id": "1",
+      "type_access_id": "1"
+    }
+  ]
+}

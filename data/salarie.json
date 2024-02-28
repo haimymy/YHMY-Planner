@@ -1,0 +1,29 @@
+{
+  "salarie": [
+    {
+      "id": "1",
+      "nom": "Smith",
+      "password": "password123"
+    },
+    {
+      "id": "2",
+      "nom": "Johnson",
+      "password": "securePass456"
+    },
+    {
+      "id": "3",
+      "nom": "Williams",
+      "password": "salariePass789"
+    },
+    {
+      "id": "4",
+      "nom": "Jones",
+      "password": "1234Employee"
+    },
+    {
+      "id": "5",
+      "nom": "Brown",
+      "password": "employeePass987"
+    }
+  ]
+}
