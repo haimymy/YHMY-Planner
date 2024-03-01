@@ -111,6 +111,7 @@ export default function ProjectDetails() {
 import { PrismaClient } from '@prisma/client';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import Link from "next/link";
 const prisma = new PrismaClient();
 
 export default function ProjectDetails() {
@@ -120,6 +121,8 @@ export default function ProjectDetails() {
     const {projectId} = router.query;
     const [selectedUserId, setSelectedUserId] = useState('');
     const [users, setUsers] = useState([]);
+    const [loggedInUser, setLoggedInUser] = useState(null); // State variable to store loggedInUser
+
 
     if (router.isFallback) {
         return <div>Loading...</div>;
@@ -148,6 +151,8 @@ export default function ProjectDetails() {
     useEffect(() => {
         async function fetchProject() {
             try {
+                const loggedInUser = sessionStorage.getItem('loggedInUser')?.replaceAll('"', '');
+                setLoggedInUser(loggedInUser);
                 const response = await fetch(`/api/projects/projectFiche?projectId=${projectId}`);
                 if (response.ok) {
                     const projectData = await response.json();
@@ -176,6 +181,7 @@ export default function ProjectDetails() {
                 <h2>{project.title}</h2>
                 <p>Description: {project.description}</p>
                 <p>Manager: {project.manager.name}</p>
+                {buttonGestionDroit(loggedInUser, project.manager.name, projectId)}
                 <h3>Tasks:</h3>
                 <ul>
                     {project.tasks.map((task) => (
@@ -295,6 +301,14 @@ function getStatusString(status) {
             return 'terminé';
         default:
             return 'Unknown';
+    }
+}
+
+function buttonGestionDroit(loggedInUser, manager, projectId){
+    if(loggedInUser===manager){
+        return(
+            <Link href={`/projects/${projectId}/droits`}>Gestion de droits</Link>
+        );
     }
 }
 
