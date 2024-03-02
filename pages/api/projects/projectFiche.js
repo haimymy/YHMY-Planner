@@ -21,11 +21,16 @@ export default async function handler(req, res) {
                 manager: { select: { name: true } }, // Include the manager's name
                 tasks: {
                     include: {
-                        author: { select: { name: true } }, // Include the author's name for each task
-                        assignee: { select: { name: true } } // Include the assignee's name for each task
+                        assignees: {
+                            include: {
+                                user: {
+                                    select: { name: true } // Include the name of the user assigned to the task
+                                }
+                            }
+                        }
                     }
                 },
-                accesses: true // Include the accesses associated with the project
+                accesses: true
             }
         });
 

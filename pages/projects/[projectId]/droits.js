@@ -7,7 +7,7 @@ export default function ManagePermissions() {
     const router = useRouter();
     const { projectId } = router.query;
     useEffect(() => {
-        async function fetchUsers(projectId ) {
+        async function fetchUsersWithPermissions(projectId) {
             try {
                 const response = await fetch(`/api/projects/assignees?projectId=${projectId}`);
                 if (response.ok) {
@@ -22,10 +22,11 @@ export default function ManagePermissions() {
                 setError('An error occurred while fetching users');
             }
         }
+
         if (projectId) {
-            fetchUsers(projectId);
+            fetchUsersWithPermissions(projectId);
         }
-    }, [projectId]);// Make sure to include projectId in the dependency array to trigger the effect when it changes
+    }, [projectId]);
 
     const handlePermissionChange = async (assigneeName, accessType) => {
         try {
@@ -47,26 +48,26 @@ export default function ManagePermissions() {
     return (
         <div>
             <h1>Manage Permissions</h1>
-            {usersWithPermissions.map(({ assignee, accessType }) => (
-                <div key={assignee.name}>
-                    <p>User: {assignee.name}</p>
+            {usersWithPermissions.map(({ userName, accessType }) => ( // Corrected destructuring
+                <div key={userName}>
+                    <p>User: {userName}</p>
                     <label>
                         <input
                             type="radio"
-                            name={assignee.name}
+                            name={userName}
                             value="ls"
                             checked={accessType === 'ls'}
-                            onChange={() => handlePermissionChange(assignee.name, 'ls')}
+                            onChange={() => handlePermissionChange(userName, 'ls')} 
                         />
                         Lecture seule
                     </label>
                     <label>
                         <input
                             type="radio"
-                            name={assignee.name}
+                            name={userName}
                             value="le"
                             checked={accessType === 'le'}
-                            onChange={() => handlePermissionChange(assignee.name, 'le')}
+                            onChange={() => handlePermissionChange(userName, 'le')}
                         />
                         Lecture et écriture
                     </label>
@@ -75,4 +76,5 @@ export default function ManagePermissions() {
             {error && <div>Error: {error}</div>}
         </div>
     );
+
 }

@@ -107,22 +107,18 @@ export default function ProjectDetails() {
 }
 */
 // pages/projects/[projectId].js
-
-import { PrismaClient } from '@prisma/client';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import Link from "next/link";
-const prisma = new PrismaClient();
+import Link from 'next/link';
+import MultiSelectAssignees from '../../components/taches/MultiSelectAssignees';
 
 export default function ProjectDetails() {
     const router = useRouter();
     const [project, setProject] = useState(null);
     const [error, setError] = useState('');
-    const {projectId} = router.query;
-    const [selectedUserId, setSelectedUserId] = useState('');
+    const { projectId } = router.query;
     const [users, setUsers] = useState([]);
     const [loggedInUser, setLoggedInUser] = useState(null); // State variable to store loggedInUser
-
 
     if (router.isFallback) {
         return <div>Loading...</div>;
@@ -134,7 +130,6 @@ export default function ProjectDetails() {
                 const response = await fetch('/api/users/liste');
                 if (response.ok) {
                     const usersData = await response.json();
-                    console.log(usersData);
                     setUsers(usersData);
                 } else {
                     setError('Error fetching users');
@@ -156,7 +151,6 @@ export default function ProjectDetails() {
                 const response = await fetch(`/api/projects/projectFiche?projectId=${projectId}`);
                 if (response.ok) {
                     const projectData = await response.json();
-                    console.log(projectData);
                     setProject(projectData);
                 } else {
                     setError('Error fetching project');
@@ -175,40 +169,43 @@ export default function ProjectDetails() {
         <div>
             <h1>Project Details</h1>
             <TaskForm users={users} projectId={projectId}/>
-    {
-        project && (
-            <>
-                <h2>{project.title}</h2>
-                <p>Description: {project.description}</p>
-                <p>Manager: {project.manager.name}</p>
-                {buttonGestionDroit(loggedInUser, project.manager.name, projectId)}
-                <h3>Tasks:</h3>
-                <ul>
-                    {project.tasks.map((task) => (
-                        <li key={task.id}>
-                            <strong>{task.id}. {task.title}</strong>
-                            <p>Description: {task.description}</p>
-                            <p>Status: {getStatusString(task.status)}</p>
-                            <p>Ajoutée par: {task.author.name}</p>
-                            <p>Assignee: {task.assignee.name}</p>
-                        </li>
-                    ))}
-                </ul>
-            </>
-        )
-    }
-    {
-        error && <div>Error: {error}</div>
-    }
-</div>
-)
-    ;
+
+            {project && (
+                <>
+                    <h2>{project.title}</h2>
+                    <p>Description: {project.description}</p>
+                    <p>Manager: {project.manager.name}</p>
+                    {buttonGestionDroit(loggedInUser, project.manager.name, projectId)}
+                    <h3>Tasks:</h3>
+                    <ul>
+                        {project.tasks.map((task) => (
+                            <li key={task.id}>
+                                <strong>{task.id}. {task.title}</strong>
+                                <p>Description: {task.description}</p>
+                                <p>Status: {getStatusString(task.status)}</p>
+                                <p>Ajoutée par: {task.authorName}</p>
+                                <p>Assignee:
+                                    {task.assignees.map((assignee, index) => (
+                                        <span key={index}>
+                                            {assignee.userName}
+                                            {index !== task.assignees.length - 1 && ', '}
+                                        </span>
+                                    ))}
+                                </p>
+                            </li>
+                        ))}
+                    </ul>
+                </>
+            )}
+            {error && <div>Error: {error}</div>}
+        </div>
+    );
 }
 
-function TaskForm({ users,projectId }) {
+function TaskForm({ users, projectId }) {
     const [taskName, setTaskName] = useState('');
     const [taskDescription, setTaskDescription] = useState('');
-    const [selectedUserName, setSelectedUserName] = useState('');
+    const [selectedUserName, setSelectedUserName] = useState([]);
     const [selectedEffort, setSelectedEffort] = useState('');
     const [error, setError] = useState('');
 
@@ -216,29 +213,31 @@ function TaskForm({ users,projectId }) {
     for (let i = 2; i <= 6; i++) {
         fibonacci[i] = fibonacci[i - 1] + fibonacci[i - 2];
     }
+
     const handleEffortChange = (e) => {
         setSelectedEffort(e.target.value);
     };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
         try {
             const loggedInUser = sessionStorage.getItem('loggedInUser').replaceAll('"', '');
 
-                const response = await fetch('/api/taches/create', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        taskName,
-                        taskDescription,
-                        selectedUserName,
-                        selectedEffort,
-                        projectId,
-                        loggedInUser
-                    }),
-                });
+            const response = await fetch('/api/taches/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    taskName,
+                    taskDescription,
+                    selectedUserNames: selectedUserName,
+                    selectedEffort,
+                    projectId,
+                    loggedInUser
+                }),
+            });
 
             if (response.ok) {
                 window.location.reload();
@@ -257,15 +256,15 @@ function TaskForm({ users,projectId }) {
             <form onSubmit={handleSubmit}>
                 <div>
                     <label>Nom de la tâche:</label>
-                    <input type="text" value={taskName} onChange={(e) => setTaskName(e.target.value)}/>
+                    <input type="text" value={taskName} onChange={(e) => setTaskName(e.target.value)} required={true}/>
                 </div>
                 <div>
                     <label>Description de la tâche:</label>
-                    <textarea value={taskDescription} onChange={(e) => setTaskDescription(e.target.value)}></textarea>
+                    <textarea value={taskDescription} onChange={(e) => setTaskDescription(e.target.value)} required={true}></textarea>
                 </div>
                 <div>
                     <label>Effort:</label>
-                    <select value={selectedEffort} onChange={handleEffortChange}>
+                    <select value={selectedEffort} onChange={handleEffortChange} required={true}>
                         <option value="" disabled>Select effort</option>
                         {fibonacci.map((number, index) => (
                             <option key={index} value={number}>{number}</option>
@@ -274,20 +273,23 @@ function TaskForm({ users,projectId }) {
                 </div>
                 <div>
                     <label>Délégué à:</label>
-                    <select value={selectedUserName} onChange={(e) => setSelectedUserName(e.target.value)}>
-                        <option value="" disabled={true}>Choisir un salarié</option>
-                        {users.map(user => (
-                            <option key={user.name} value={user.name}>{user.name}</option>
-                        ))}
-                    </select>
+                    <MultiSelectAssignees users={users} selectedAssignees={selectedUserName} setSelectedAssignees={setSelectedUserName} />
                 </div>
                 <div>
                     <button type="submit">Ajouter</button>
                 </div>
-                {error && <div style={{color: 'red'}}>{error}</div>}
+                {error && <div style={{ color: 'red' }}>{error}</div>}
             </form>
         </div>
     );
+}
+
+function buttonGestionDroit(loggedInUser, manager, projectId) {
+    if (loggedInUser === manager) {
+        return (
+            <Link href={`/projects/${projectId}/droits`}>Gestion de droits</Link>
+        );
+    }
 }
 
 function getStatusString(status) {
@@ -304,13 +306,6 @@ function getStatusString(status) {
     }
 }
 
-function buttonGestionDroit(loggedInUser, manager, projectId){
-    if(loggedInUser===manager){
-        return(
-            <Link href={`/projects/${projectId}/droits`}>Gestion de droits</Link>
-        );
-    }
-}
 
 
 

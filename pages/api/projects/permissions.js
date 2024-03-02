@@ -1,23 +1,22 @@
-// pages/api/projects/[projectId]/permissions.js
-
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
-
-
     const { projectId } = req.query;
-    const { assigneeName, accessType } = req.body;
 
     try {
-        await prisma.access.updateMany({
-            where: { assigneeName, projectId: parseInt(projectId) },
-            data: { accessType },
+        // Fetch all accesses related to the project along with the associated user details
+        const projectAccesses = await prisma.access.findMany({
+            where: { projectId: parseInt(projectId) },
+            include: {
+                employee: true // Include user details
+            }
         });
-        res.status(200).json({ message: 'Permissions updated successfully' });
+
+        res.status(200).json(projectAccesses);
     } catch (error) {
-        console.error('Error updating permissions:', error);
-        res.status(500).json({ error: 'An error occurred while updating permissions' });
+        console.error('Error fetching project accesses:', error);
+        res.status(500).json({ error: 'An error occurred while fetching project accesses' });
     }
 }

@@ -1,28 +1,34 @@
+// /api/projects/assignees.js
+
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 export default async function handler(req, res) {
-    if (req.method !== 'GET') {
-        return res.status(405).json({ error: 'Method Not Allowed' });
-    }
+    const { projectId } = req.query;
 
     try {
-        const { projectId } = req.query; // Assuming projectId is part of the query parameters
-        console.log(projectId);
-        const assignes = await prisma.access.findMany({
-            where: { projectId: Number(projectId) }, // Assuming projectId is a number
+        const assignees = await prisma.access.findMany({
+            where: {
+                projectId: parseInt(projectId),
+            },
             include: {
-                assignee: {
-                    select: {
-                        name: true // Selecting only the 'name' field of the 'assignee'
-                    }
-                }
+                employee: true, // Include the user associated with the access
+            },
+            distinct: ['employeeName'],
+            orderBy: {
+                employeeName: 'asc', // Order by employeeName in ascending order
             },
         });
-        return res.status(200).json(assignes);
+
+        const usersWithPermissions = assignees.map(assignee => ({
+            userName: assignee.employeeName,
+            accessType: assignee.accessType,
+        }));
+
+        res.status(200).json(usersWithPermissions);
     } catch (error) {
-        console.error('Error fetching assignes:', error);
-        return res.status(500).json({ error: 'An error occurred while fetching assignes' });
+        console.error('Error fetching assignees:', error);
+        res.status(500).json({ error: 'An error occurred while fetching assignees' });
     }
 }

@@ -18,7 +18,7 @@ export default async function handler(req, res) {
                     where: {
                         OR: [
                             { managerName: userName }, // Projects created by the user
-                            { tasks: { some: { assigneeName: userName } } } // Projects with tasks assigned to the user
+                            { tasks: { some: { assignees: { some: { userName: userName } } } } } // Projects with tasks assigned to the user
                         ]
                     },
                 },
