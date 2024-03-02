@@ -8,11 +8,8 @@ export default async function handler(req, res) {
     const { userName } = req.query;
 
     try {
-        // Fetch user projects based on the provided userName
         const user = await prisma.user.findUnique({
-            where: {
-                name: userName,
-            },
+            where: { name: userName,},
             include: {
                 projects: {
                     where: {
