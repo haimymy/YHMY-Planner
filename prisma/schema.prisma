@@ -40,9 +40,8 @@ model Task {
 }
 
 model TaskAssignment {
-  task   Task @relation(fields: [taskId], references: [id], name: "TaskUsers")
-  taskId Int
-
+  task     Task   @relation(fields: [taskId], references: [id], name: "TaskUsers")
+  taskId   Int
   user     User   @relation(fields: [userName], references: [name], name: "UserTasks")
   userName String
 

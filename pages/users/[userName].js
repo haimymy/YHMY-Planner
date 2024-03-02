@@ -16,6 +16,7 @@ export default function AddProject() {
         try {
             const loggedInUser = sessionStorage.getItem('loggedInUser').replaceAll('"', '');
             setLoggedInUser(loggedInUser);
+            console.log(userName);
             if(loggedInUser===userName) {
                 const response = await fetch(`/api/users/${loggedInUser}`);
                 if (response.ok) {
@@ -24,7 +25,7 @@ export default function AddProject() {
                 } else {
                     setError('Failed to fetch user projects');
                 }
-            } else router.replace('/users/login');
+            } else console.log('login');
         } catch (error) {
             console.error('Error fetching user projects:', error);
             setError('An error occurred while fetching user projects');
