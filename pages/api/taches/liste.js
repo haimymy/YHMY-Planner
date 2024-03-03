@@ -1,6 +1,7 @@
 // pages/api/users.js
 
 import { PrismaClient } from '@prisma/client';
+import {router} from "next/client";
 
 const prisma = new PrismaClient();
 const projectId = router.query.userName;

@@ -45,7 +45,7 @@ export default function ManagePermissions() {
             // Fetch updated permissions after successful update
             fetchUsersWithPermissions(projectId);
             setSuccess('Permissions updated successfully');
-            setTimeout(() => setSuccess(''), 5000); // Clear success message after 5 seconds
+            setTimeout(() => setSuccess(''), 5000);
         } catch (error) {
             setError(error.message);
         }
