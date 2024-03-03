@@ -56,6 +56,33 @@ export default function ProjectDetails() {
         }
     }, [projectId]);
 
+    const handleDeleteTask = async (taskId) => {
+        const confirmDelete = window.confirm("Are you sure you want to delete this task?");
+        if (!confirmDelete) return; // If user cancels, do nothing
+        try {
+            const response = await fetch(`/api/taches/delete`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ taskId }),
+            });
+            if (response.ok) {
+                const updatedProject = { ...project };
+                updatedProject.tasks = updatedProject.tasks.filter(task => task.id !== taskId);
+                setProject(updatedProject);
+            } else {
+                setError('Error deleting task');
+            }
+        } catch (error) {
+            console.error('Error deleting task:', error);
+            setError('An error occurred while deleting task');
+        }
+    };
+
+
+
+
     return (
         <div>
             <h1>Project Details</h1>
@@ -160,6 +187,8 @@ export default function ProjectDetails() {
                                     padding: '8px'
                                 }}>
                                     <Link href={`/taches/${task.id}/update`}>Modifier</Link>
+                                    <button onClick={() => handleDeleteTask(task.id)}>Supprimer</button>
+
                                 </td>
                             </tr>
                         ))}
