@@ -61,6 +61,28 @@ export default function AddProject() {
         }
     };
 
+    const handleDeleteProject = async (projectId) => {
+        const confirmDelete = window.confirm("Are you sure you want to delete this project?");
+        if (!confirmDelete) return;
+        try {
+            const response = await fetch(`/api/projects/delete`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ projectId }),
+            });
+            if (response.ok) {
+                router.replace(router.asPath);
+            } else {
+                setError('Error deleting project');
+            }
+        } catch (error) {
+            console.error('Error deleting project:', error);
+            setError('An error occurred while deleting project');
+        }
+    };
+
     return (
         <div>
             <h1>Add Project</h1>
@@ -94,17 +116,32 @@ export default function AddProject() {
 
             <h3>Mes projets :</h3>
             <h5>Y compris les projets que l'utilisateur a créés ou auxquels il'a été assigné des tâches </h5>
-            <ul>
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Title</th>
+                    <th>Description</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
                 {userProjects.map((project) => (
-                    <li key={project.id}>
-                        <strong>{project.title}</strong>
-                        <p>Description: {project.description}</p>
-                        <Link href={`/projects/${project.id}`}>
-                            View Project Details
-                        </Link>
-                    </li>
+                    <tr key={project.id}>
+                        <td>{project.id}</td>
+                        <td>{project.title}</td>
+                        <td>{project.description}</td>
+                        <td>
+                            <Link href={`/projects/${project.id}`}>
+                                View Project Details
+                            </Link>
+                            <button onClick={() => handleDeleteProject(project.id)}>Delete</button>
+                        </td>
+                    </tr>
                 ))}
-            </ul>
+                </tbody>
+            </table>
+
         </div>
     );
 }

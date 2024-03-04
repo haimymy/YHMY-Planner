@@ -68,11 +68,10 @@ export default function ProjectDetails() {
                 body: JSON.stringify({ taskId }),
             });
             if (response.ok) {
-                const updatedProject = { ...project };
-                updatedProject.tasks = updatedProject.tasks.filter(task => task.id !== taskId);
-                setProject(updatedProject);
+                fetchProject();
+                alert("Project deleted successfully.");
             } else {
-                setError('Error deleting task');
+                setError('Error deleting project');
             }
         } catch (error) {
             console.error('Error deleting task:', error);
